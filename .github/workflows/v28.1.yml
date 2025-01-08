@@ -1,4 +1,4 @@
-name: Build (v28.1)
+name: Build (v27.2-kitsune-3)
 
 on: [workflow_dispatch]
 
@@ -59,7 +59,7 @@ jobs:
                        os_patch_level=2099-12    \
                        +always_enforce           \
                        +1000hz                   \
-                       +magisk=v28.1             \
+                       +magisk=v27.2-kitsune-3   \
                        +force_dex_wqhd           \
                        +fp_boost                 \
                        +noatime                  \

@@ -1,4 +1,4 @@
-name: Build (canary-27005)
+name: Build (v28.1)
 
 on: [workflow_dispatch]
 
@@ -59,7 +59,7 @@ jobs:
                        os_patch_level=2099-12    \
                        +always_enforce           \
                        +1000hz                   \
-                       +magisk=canary-27005      \
+                       +magisk=v28.1             \
                        +force_dex_wqhd           \
                        +fp_boost                 \
                        +noatime                  \

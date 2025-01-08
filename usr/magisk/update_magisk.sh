@@ -21,10 +21,13 @@ if [[ "$1" == *"-kitsune" ]]; then
 	
     magisk_link="https://github.com/HuskyDG/magisk-files/releases/download/${nver}/app-release.apk"
 	
-elif [ "x$1" = "xcanary" ]; then
-	nver="$(curl -s https://github.com/topjohnwu/Magisk/releases | grep -m 1 -Poe 'canary-[0-9]{5}')"
+elif [[ "$1" =~ ^canary(-[0-9]+)?$ ]]; then
+ 	if [[ "$1" == "canary" ]]; then
+		nver="$(curl -s https://github.com/topjohnwu/Magisk/releases | grep -m 1 -Poe 'canary-[0-9]{5}')"
+	else
+		nver="$1"
+	fi
 	magisk_link="https://github.com/topjohnwu/Magisk/releases/download/${nver}/app-release.apk"
-
 else
 	dash='-'
 	if [ "x$1" = "x" ]; then

@@ -28,6 +28,15 @@ elif [[ "$1" =~ ^canary(-[0-9]+)?$ ]]; then
 		nver="$1"
 	fi
 	magisk_link="https://github.com/topjohnwu/Magisk/releases/download/${nver}/app-release.apk"
+ elif [[ "$1" =~ ^v[0-9]+\.[0-9]+(-kitsune-[0-9]+|-([a-f0-9]+))?$ ]]; then
+    if [[ "$1" =~ ^v[0-9]+\.[0-9]+-kitsune-[0-9]+$ ]]; then
+        nver="$1"
+    elif [[ "$1" =~ ^v[0-9]+\.[0-9]+-[a-f0-9]+$ ]]; then
+        nver="$1"
+    else
+        nver="$(curl -s https://github.com/1q23lyc45/KitsuneMagisk/releases | grep -m 1 -Poe 'v[0-9]+\.[0-9]+-kitsune-[0-9]+')"
+    fi
+    magisk_link="https://github.com/1q23lyc45/KitsuneMagisk/releases/download/${nver}/app-release.apk"
 else
 	dash='-'
 	if [ "x$1" = "x" ]; then
@@ -41,7 +50,7 @@ else
 	magisk_link="https://github.com/topjohnwu/Magisk/releases/download/${nver}/Magisk${dash}${nver}.apk"
 fi
 
-if [ \( -n "$nver" \) -a \( "$nver" != "$ver" \) -o ! \( -f "$DIR/magiskinit" \) -o \( "$nver" = "canary" \) -o \( "$nver" = "kitsune" \) ]; then
+if [[ -n "$nver" && "$nver" != "$ver" || ! -f "$DIR/magiskinit" || "$nver" =~ ^canary(-[0-9]+)?$ || "$nver" =~ ^v[0-9]+\.[0-9]+-kitsune-[0-9]+$ ]]; then
     echo "Updating Magisk from $ver to $nver"
     curl -s --output "$DIR/magisk.zip" -L "$magisk_link"
     if fgrep 'Not Found' "$DIR/magisk.zip"; then
@@ -60,12 +69,6 @@ if [ \( -n "$nver" \) -a \( "$nver" != "$ver" \) -o ! \( -f "$DIR/magiskinit" \)
         mv -f "$DIR/lib/arm64-v8a/libmagiskinit.so" "$DIR/magiskinit"
         mv -f "$DIR/lib/armeabi-v7a/libmagisk32.so" "$DIR/magisk32"
         mv -f "$DIR/lib/arm64-v8a/libmagisk64.so" "$DIR/magisk64"
-        mv -f "$DIR/assets/stub.apk" "$DIR/stub"
-        xz --force --check=crc32 "$DIR/magisk32" "$DIR/magisk64" "$DIR/stub"
-    elif unzip -o "$DIR/magisk.zip" lib/arm64-v8a/libmagiskinit.so lib/armeabi-v7a/libmagisk.so lib/arm64-v8a/libmagisk.so assets/stub.apk -d "$DIR"; then
-        mv -f "$DIR/lib/arm64-v8a/libmagiskinit.so" "$DIR/magiskinit"
-        mv -f "$DIR/lib/armeabi-v7a/libmagisk.so" "$DIR/magisk32"
-        mv -f "$DIR/lib/arm64-v8a/libmagisk.so" "$DIR/magisk64"
         mv -f "$DIR/assets/stub.apk" "$DIR/stub"
         xz --force --check=crc32 "$DIR/magisk32" "$DIR/magisk64" "$DIR/stub"
     else
